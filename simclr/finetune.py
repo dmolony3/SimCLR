@@ -89,11 +89,15 @@ def finetune(model, config):
     Args:
         model: a tensorflow keras model
         config: model configurations
+    Raises:
+        OSError: If pretrained save path does not contain checkpoint or is not set to None
     """
 
 
     # Restore the pretrained model first
     checkpoint, manager = restore_weights(model, config.pretrain_save_path)
+    if not manager.latest_checkpoint and config.pretrain_save_path is not None:
+        raise OSError("No pretrained saved checkpoints found in {}".format(config.pretrain_save_path))
     
     if config.freeze:
         model.trainable = False

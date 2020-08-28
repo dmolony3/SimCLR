@@ -36,7 +36,7 @@ def run(config):
 
         if config.num_classes is None:
             raise ValueError("The number of classes must be set")
-        
+
         if config.cifar10:
             finetune_cifar10(model, config)
         else:
@@ -73,6 +73,8 @@ if __name__ == "__main__":
     parser.add_argument('--no-noise', dest='apply_noise', action='store_false', help="Removes guassian noise image augmentation")
     parser.add_argument('--colordrop', dest='apply_colordrop', action='store_true', help="Applies color drop image augmentation")
     parser.add_argument('--no-colordrop', dest='apply_colordrop', action='store_false', help="Removes color drop image augmentation")
+    parser.add_argument('--temperature', type=float, help="Sets the temperature for cross-entropy loss function")
+    parser.add_argument('--strength', type=float, help="Sets the strength of augmentations")
 
     args = parser.parse_args()
 
@@ -98,6 +100,8 @@ if __name__ == "__main__":
     config.flip = args.apply_flip
     config.noise = args.apply_noise
     config.colordrop = args.apply_colordrop
+    config.temperature = args.temperature
+    config.strength = args.strength
     config.model = args.model
 
     if not config.cifar10 and config.train_file_path == '':
