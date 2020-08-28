@@ -62,5 +62,26 @@ python main.py --task=pretrain --cifar10=True --batch_size=256 --num_epochs=1000
 python main.py --task=classification --cifar10=True --batch_size=256 --num_classes=10 --pretrain_save_path=logs/pretrain --finetune_save_path=logs/finetune --freeze
 ```
 
+### UTKFace
+This example case uses the [UTKFace dataset](https://susanqq.github.io/UTKFace/). This dataset consists of over 20,000 face images where each face is labelled with age, gender and ethnicity. This example is contained within this [colab](https://colab.research.google.com/drive/1DGs85UUTGFEYHTeud9kM-fpwOKNXXdHt?usp=sharing)
+
+#### Pretraining
+We pretrain the model for 500 epochs and the loss is shown below. We use a linear warmup for 1000 iterations then decay the learning rate.
+
+![Loss](media/Loss_UTKFace.png)
+
+#### Linear evaluation 
+For the linear evaluation we discard the projection head, freeze the model weights and train a linear classifier. We train the linear classifier on 80% of the training data and evaluate it on the remaining 20%. The results are shown in the table below.
+
+| Training Epoch  |  100  |  200  |  300  |  400  |  500  |
+| --------------  |:-----:|:-----:|:-----:|:-----:|:-----:|
+| Accuracy        |   45  |   55  |   44  |   66  |   44  |
+
+#### T-SNE visualization
+The SimCLR paper showed that the last layer of the ResNet model *h*, visually separated dataset classes better than the output *z* of the projection head *g(h)*. Here we also compare the separation for both layers.
+
+![T-SNE h](media/T-SNE_h.png)
+
+![T-SNE g(h)](media/T-SNE_g(h).png)
 
 

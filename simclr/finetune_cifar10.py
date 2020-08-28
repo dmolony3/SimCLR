@@ -176,15 +176,22 @@ def restore_weights(model, save_path, optimizer=None):
         checkpoint = tf.train.Checkpoint(step=tf.Variable(1), optimizer=optimizer, net=model)
     else:
         checkpoint = tf.train.Checkpoint(step=tf.Variable(1), net=model)
+
     manager = tf.train.CheckpointManager(checkpoint, save_path, max_to_keep=3)
+
     if manager.latest_checkpoint:
         status = checkpoint.restore(manager.latest_checkpoint)
         status.expect_partial()
         print('Restored weights from {}'.format(manager.latest_checkpoint))
     else:
         print('No checkpoint found in {}, creating a new checkpoint manager'.format(save_path))
-        checkpoint = tf.train.Checkpoint(step=tf.Variable(1), optimizer=optimizer, net=model)
+        if optimizer is not None:
+            checkpoint = tf.train.Checkpoint(step=tf.Variable(1), optimizer=optimizer, net=model)
+        else:
+            checkpoint = tf.train.Checkpoint(step=tf.Variable(1), net=model)
+
         manager = tf.train.CheckpointManager(checkpoint, save_path, max_to_keep=3)
+
     return checkpoint, manager
 
 def load_cifar10(config):
